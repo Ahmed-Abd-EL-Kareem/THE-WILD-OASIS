@@ -9,16 +9,23 @@ import {
 import { formatCurrency } from "../../utils/helpers";
 
 function Stats({ bookings, confirmedStays, numDays, cabinCount }) {
+  const safeBookings = bookings ?? [];
+  const safeConfirmedStays = confirmedStays ?? [];
+  const safeCabinCount = cabinCount ?? 0;
+  const safeNumDays = numDays ?? 0;
   // 1.
-  const numBookings = bookings.length;
+  const numBookings = safeBookings.length;
   // 2.
-  const sales = bookings.reduce((acc, cur) => acc + cur.totalPrice, 0);
+  const sales = safeBookings.reduce((acc, cur) => acc + cur.totalPrice, 0);
   // 3.
-  const checkIns = confirmedStays.length;
+  const checkIns = safeConfirmedStays.length;
   // 4.
+  const occupancyDenominator = safeNumDays * safeCabinCount;
   const occupation =
-    confirmedStays.reduce((acc, cur) => acc + cur.numNights, 0) /
-    (numDays * cabinCount);
+    occupancyDenominator > 0
+      ? safeConfirmedStays.reduce((acc, cur) => acc + cur.numNights, 0) /
+        occupancyDenominator
+      : 0;
   return (
     <>
       <Stat

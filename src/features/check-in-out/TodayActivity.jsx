@@ -5,6 +5,7 @@ import Row from "../../ui/Row";
 import { useTodayActivity } from "./useTodayActivity";
 import Spinner from "../../ui/Spinner";
 import TodayItem from "./TodayItem";
+import { useNavigate } from "react-router-dom";
 
 const StyledToday = styled.div`
   /* Box */
@@ -18,6 +19,18 @@ const StyledToday = styled.div`
   gap: 2.4rem;
   grid-column: 1 / span 2;
   padding-top: 2.4rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
 `;
 
 const TodayList = styled.ul`
@@ -41,17 +54,41 @@ const NoActivity = styled.p`
 
 function TodayActivity() {
   const { isPending, activities } = useTodayActivity();
+  const safeActivities = activities ?? [];
+  const navigate = useNavigate();
+
+  function handleActivate() {
+    navigate("/bookings");
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleActivate();
+    }
+  }
+
   return (
-    <StyledToday>
+    <StyledToday
+      role={safeActivities.length === 0 ? "button" : undefined}
+      tabIndex={safeActivities.length === 0 ? 0 : undefined}
+      aria-label={
+        safeActivities.length === 0
+          ? "Open bookings page"
+          : "Today's check-in and check-out activity"
+      }
+      onClick={safeActivities.length === 0 ? handleActivate : undefined}
+      onKeyDown={safeActivities.length === 0 ? handleKeyDown : undefined}
+    >
       <Row $type="horizontal">
         <Heading as="h2">Today</Heading>
       </Row>
 
       {!isPending ? (
-        activities.length > 0 ? (
+        safeActivities.length > 0 ? (
           <TodayList>
-            {activities.length > 0 ? (
-              activities.map((activity) => (
+            {safeActivities.length > 0 ? (
+              safeActivities.map((activity) => (
                 <TodayItem key={activity.id} activity={activity} />
               ))
             ) : (

@@ -5,9 +5,11 @@ import toast from "react-hot-toast";
 export function useSignup() {
   const { mutate: signup, isPending } = useMutation({
     mutationFn: signupApi,
-    onSuccess: (user) => {
-      console.log(user);
-      toast.success(`Account successfully created! Please verify your email`);
+    onSuccess: () => {
+      toast.success("User created successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 

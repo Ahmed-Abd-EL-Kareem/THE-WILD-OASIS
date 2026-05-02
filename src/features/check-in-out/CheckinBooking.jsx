@@ -65,9 +65,8 @@ function CheckinBooking() {
       checkin({ bookingId, breakfast: {} });
     }
   }
-  console.log(settings);
   const optionalBreakfastPrice =
-    settings.braekfastPrice * numNights * numGuests;
+    (settings.breakfastPrice || 0) * numNights * numGuests;
   return (
     <>
       <Row $type="horizontal">

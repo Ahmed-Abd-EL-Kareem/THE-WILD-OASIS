@@ -4,9 +4,9 @@ import { googleSignin } from "../../services/apiAuth";
 export function useGoogleLogin() {
   const queryClient = useQueryClient();
   const { mutate: loginGoogle, isPending } = useMutation({
-    mutationFn: async () => await googleSignin(),
-    onSuccess: (user) => {
-      queryClient.setQueryData(["user"], user.user);
+    mutationFn: async (token) => await googleSignin(token),
+    onSuccess: (authData) => {
+      queryClient.setQueryData(["user"], authData.user);
     },
   });
 

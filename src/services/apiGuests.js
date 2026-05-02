@@ -1,15 +1,21 @@
-import supabase from "./supabase";
+import { graphqlRequest } from "./graphqlClient";
 
 export async function getGuests() {
-  const { data, error } = await supabase
-    .from("guests")
-    .select("*")
-    .order("fullName");
+  const data = await graphqlRequest(`
+    query GetAllCustomers {
+      getAllCustomers {
+        id
+        fullName
+        email
+        nationalID
+        nationality
+        avatar
+        role
+        createdAt
+      }
+    }
+  `);
 
-  if (error) {
-    console.error(error);
-    throw new Error("الضيوف لا يمكن تحميلهم");
-  }
-  return data;
+  return data.getAllCustomers;
 }
 

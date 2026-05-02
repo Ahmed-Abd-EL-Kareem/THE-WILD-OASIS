@@ -28,10 +28,14 @@ import CheckoutButton from "./CheckoutButton";
 function TodayItem({ activity }) {
   const { id, status, guests, numNights } = activity;
   return (
-    <StyledTodayItem>
+    <StyledTodayItem onClick={(e) => e.stopPropagation()}>
       {status === "unconfirmed" && <Tag type="green"> Arriving</Tag>}
       {status === "checked-in" && <Tag type="blue">Departing</Tag>}
-      <Flag src={guests.countryFlag} alt={`Flag of ${guests.country}`} />
+      {guests.countryFlag ? (
+        <Flag src={guests.countryFlag} alt={`Flag of ${guests.country || "guest"}`} />
+      ) : (
+        <div />
+      )}
       <Guest>{guests.fullName}</Guest>
       <div>{numNights} nights</div>
       {status === "unconfirmed" && (
