@@ -1,6 +1,6 @@
 const GRAPHQL_URL =
   import.meta.env.VITE_GRAPHQL_URL ||
-  "https://cabins-nest-js-back-end-production.up.railway.app/graphql";
+;
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
