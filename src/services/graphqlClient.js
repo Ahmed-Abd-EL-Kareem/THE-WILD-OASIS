@@ -1,6 +1,5 @@
 const GRAPHQL_URL =
-  import.meta.env.VITE_GRAPHQL_URL ||
-;
+  import.meta.env.VITE_GRAPHQL_URL;
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
