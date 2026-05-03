@@ -39,6 +39,29 @@ function toIsoDate(date) {
   return `${date}T00:00:00.000Z`;
 }
 
+/** Fields accepted by GraphQL BookingUpdateDto (omit computed totals such as totalPrice). */
+const BOOKING_UPDATE_DTO_FIELDS = new Set([
+  "status",
+  "startDate",
+  "endDate",
+  "numNights",
+  "numGuests",
+  "extrasPrice",
+  "hasBreakfast",
+  "isPaid",
+  "observations",
+  "cabinId",
+  "guestId",
+]);
+
+function pickBookingUpdatePayload(raw) {
+  const picked = {};
+  for (const key of BOOKING_UPDATE_DTO_FIELDS) {
+    if (raw[key] !== undefined) picked[key] = raw[key];
+  }
+  return picked;
+}
+
 export async function getBookings({ filter, sortBy, page, search, limit }) {
   const status = filter?.value ? STATUS_TO_API[filter.value] : undefined;
   const sortField = sortBy?.field ? SORT_FIELD_TO_API[sortBy.field] : undefined;
@@ -259,14 +282,14 @@ export async function getStaysTodayActivity() {
 }
 
 export async function updateBooking(id, obj) {
-  const bookingUpdate = {
+  const bookingUpdate = pickBookingUpdatePayload({
     ...obj,
     status: obj.status ? STATUS_TO_API[obj.status] || obj.status : undefined,
     startDate: obj.startDate ? toIsoDate(obj.startDate) : undefined,
     endDate: obj.endDate ? toIsoDate(obj.endDate) : undefined,
     cabinId: obj.cabinId ? Number(obj.cabinId) : undefined,
     guestId: obj.guestId ? Number(obj.guestId) : undefined,
-  };
+  });
 
   Object.keys(bookingUpdate).forEach((key) => {
     if (bookingUpdate[key] === undefined) delete bookingUpdate[key];
